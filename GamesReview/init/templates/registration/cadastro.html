@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - GamesRE</title>
+    <link rel="stylesheet" href="{% static 'registration/css/style.css' %}">
+
+</head>
+<body>
+
+    <form class="card" method="post">
+        <h1>Cadastro :</h1>
+        {% csrf_token %}
+        <div class="user-pass">
+            {{form.username}}
+            {% if form.errors.username %}
+                {{ form.errors.username }}
+            {% endif %}
+        </div>
+
+        <div class="user-pass">
+            {{form.email}}
+            {% if form.errors.email %}
+                {{ form.errors.email }}
+            {% endif %}
+        </div>
+        <div class="user-pass">
+            {{form.password1}}
+            {% if form.errors.password1 %}
+                {{ form.errors.password1 }}
+            {% endif %}
+        </div>
+        <div class="user-pass">
+            {{form.foto_perfil}}
+        </div>
+        <div class="user-pass">
+            {{form.bio}}
+        </div>
+        
+        <button class="btn" type="submit">Cadastrar</button>
+        
+    
+            
+    </form>
+    <a href="{% url 'Login' %}">Ir para </a>
+</body>
+</html>

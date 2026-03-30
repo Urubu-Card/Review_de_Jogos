@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - GamesRE</title>
+    <link rel="stylesheet" href="{% static 'registration/css/style.css' %}">
+
+</head>
+
+<body>
+
+    <form class="card" method="post">
+        <h1>Login :</h1>
+        {% csrf_token %}
+        <div class="user-pass">
+            {{form.username}}
+            {% if form.errors.username %}
+            {{ form.errors.username }}
+            {% endif %}
+        </div>
+
+        <div class="user-pass">
+            {{form.password}}
+            {% if form.errors.password %}
+            {{ form.errors.password }}
+            {% endif %}
+        </div>
+        <div>
+            {% if messages %}
+                {% for mens in messages %}
+                    <p class="error-msg">{{ mens }}</p>
+                {% endfor %}
+
+            {% endif %}
+        </div>
+        <button class="btn" type="submit">Entrar:</button>
+
+
+
+    </form>
+
+</body>
+
+</html>
