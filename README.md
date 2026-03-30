@@ -25,4 +25,4 @@ Site de reviews de jogos feito com Django, inspirado no Metacritic. Usuários po
  
 ---
  
-# Tudo esta em WIP⚠️
+# Tudo está em WIP⚠️
