@@ -62,23 +62,43 @@ class App:
         
         jogo = get_object_or_404(Game,id=id)
         reviews = Review.objects.filter(jogo=jogo)
-        
+        #print(jogo)
+
         if request.method =="POST":
             del_game    = request.POST.get("deletar-jogo")
             nova_review = request.POST.get("nova-review")
+            usuario     = request.user
+    
             
             if del_game:
                 Game.objects.get(id=id).delete()
                 return redirect("Home")
             
-            if nova_review:
+            elif nova_review:
+                nota = request.POST.get("rating"),
+                desc = request.POST.get("comentario")
+
+                if Review.objects.filter(jogo=jogo,user=usuario).exists():
+                    messages.error(request,"Jogador ja tem uma review sobre esse jogo")
+                    print("Chega aquimas ta vindo com o bagulho vazio")
+                    return redirect("Info_Jogo",id = id)
+
+
+
+                elif nota is None or desc == "":
+                    messages.error(request,"As informações abaixo deve ser prenchidas")
+                    return redirect("Info_Jogo",id = id)
+
+                
+
                 Review.objects.create(
                     jogo = jogo,
-                    user = request.user,
+                    user = usuario,
                     nota = request.POST.get("rating"),
                     desc = request.POST.get("comentario")
                 )
                 return redirect("Info_Jogo",id = id)
+            
             
 
         

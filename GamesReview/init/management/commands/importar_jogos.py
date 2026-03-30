@@ -32,7 +32,7 @@ class Command(BaseCommand):
             dados_games = resposta.json()
             
             nome_jogo = dados_games.get('name')
-            if Game.objects.get(titulo=nome_jogo):
+            if Game.objects.filter(titulo=nome_jogo).exists():
                 print(f"{nome_jogo} já está no banco de dados")
                 continue
             else:
