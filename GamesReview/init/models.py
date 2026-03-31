@@ -6,8 +6,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Usuario(AbstractUser):
     """Model definition for Users."""
-    
-
 
     foto_perfil = models.URLField(max_length=255,blank=True,null=True)
     bio = models.CharField(blank=True)

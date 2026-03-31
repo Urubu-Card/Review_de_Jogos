@@ -3,7 +3,7 @@ from .forms import Cadastro , Login
 from django.contrib.auth import authenticate , login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Game,Review
+from .models import Game,Review,Usuario
 
 class Registracion:
 
@@ -11,12 +11,14 @@ class Registracion:
 
         if request.method =="POST":
             form = Cadastro(request.POST)
-
+            #print(request.POST.get('foto_perfil'))
             if form.is_valid():
-                form.save()
-                print("Redirecionando...")
-                return redirect("Login")    
-        
+                usuario = form.save(commit=False)  
+                usuario.foto_perfil = form.cleaned_data.get('foto_perfil') 
+                usuario.bio = form.cleaned_data.get('bio')
+                usuario.save()  
+                return redirect("Login")
+            
         else:
             form = Cadastro()
 
@@ -26,7 +28,7 @@ class Registracion:
     def Logar(request):
 
         if request.method =="POST":
-            form = Login(request.POST)
+            form = Login(request.POST.get())
             if form.is_valid():
                 username = form.cleaned_data.get("username")
                 password = form.cleaned_data.get("password")
@@ -56,6 +58,12 @@ class App:
 
         return render(request,"home/index.html",{"jogos":jogos})
     
+    @login_required
+    def  User_Page(request,username):
+
+        pessoa = get_object_or_404(Usuario,username=username)
+
+        return render(request,"user/index.html") 
     
     @login_required
     def Informacoes_Jogo(request,id):

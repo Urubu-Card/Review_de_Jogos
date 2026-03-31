@@ -5,14 +5,6 @@ from django.contrib.auth.password_validation import validate_password
 
 class Cadastro(UserCreationForm):
     """Cadastro definition."""
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['password1'].widget     = forms.PasswordInput(attrs={"placeholder":"Digite sua senha"}) #! Adiciona o placeholder e o formato de senha
-        self.fields['password1'].validators = [validate_password]  #!Adiciona o Validador de Senhas(Senhas Fracas,Senhas Comuns,etc)
-        self.fields.pop('password2')    #! Remove a segunda senha 
-
-
     foto_perfil     = forms.URLField(
                                 max_length=255,
                                 required=False,
@@ -23,9 +15,14 @@ class Cadastro(UserCreationForm):
                                 required=False,
                                 widget=forms.TextInput(attrs={"placeholder":"Coloque a sua BIO"}))
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].widget     = forms.PasswordInput(attrs={"placeholder":"Digite sua senha"}) #! Adiciona o placeholder e o formato de senha
+        self.fields['password1'].validators = [validate_password]  #!Adiciona o Validador de Senhas(Senhas Fracas,Senhas Comuns,etc)
+        self.fields.pop('password2')    #! Remove a segunda senha 
+        print(self.fields)
+
     
-
-
     class Meta:
         
         model = Usuario
