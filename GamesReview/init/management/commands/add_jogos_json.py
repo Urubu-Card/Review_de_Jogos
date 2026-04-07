@@ -13,7 +13,6 @@ tradutor = GoogleTranslator(source='en',target='pt')
 def traduzir_texto_longo(texto, limite=4500):
     if not texto:
         return ""
-    # Se o texto for menor que o limite, traduz direto
     if len(texto) <= limite:
         return tradutor.translate(texto)
     

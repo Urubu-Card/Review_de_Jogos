@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect , get_object_or_404
 from .forms import Cadastro , Login 
-from django.contrib.auth import authenticate , login
+from django.contrib.auth import authenticate , login , logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Game,Review,Usuario
@@ -65,10 +65,17 @@ class App:
         
         if request.user.is_superuser:
             users = Usuario.objects.all()
-            print(users)
             
         else:
             users = None
+
+        if request.method == "POST":
+
+            if "sair" in request.POST:
+                print("chega aqui")
+                logout(request)
+                return redirect("Home")
+
 
         return render(request,"user/index.html",{"usuarios":users}) 
     
