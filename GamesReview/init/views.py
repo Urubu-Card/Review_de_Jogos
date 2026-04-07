@@ -13,9 +13,9 @@ class Registracion:
             form = Cadastro(request.POST)
             #print(request.POST.get('foto_perfil'))
             if form.is_valid():
-                usuario = form.save(commit=False)  
+                usuario             = form.save(commit=False)  
                 usuario.foto_perfil = form.cleaned_data.get('foto_perfil') 
-                usuario.bio = form.cleaned_data.get('bio')
+                usuario.bio         = form.cleaned_data.get('bio')
                 usuario.save()  
                 return redirect("Login")
             
@@ -28,7 +28,7 @@ class Registracion:
     def Logar(request):
 
         if request.method =="POST":
-            form = Login(request.POST.get())
+            form = Login(request.POST)
             if form.is_valid():
                 username = form.cleaned_data.get("username")
                 password = form.cleaned_data.get("password")
@@ -62,8 +62,15 @@ class App:
     def  User_Page(request,username):
 
         pessoa = get_object_or_404(Usuario,username=username)
+        
+        if request.user.is_superuser:
+            users = Usuario.objects.all()
+            print(users)
+            
+        else:
+            users = None
 
-        return render(request,"user/index.html") 
+        return render(request,"user/index.html",{"usuarios":users}) 
     
     @login_required
     def Informacoes_Jogo(request,id):
@@ -88,7 +95,6 @@ class App:
 
                 if Review.objects.filter(jogo=jogo,user=usuario).exists():
                     messages.error(request,"Jogador ja tem uma review sobre esse jogo")
-                    print("Chega aquimas ta vindo com o bagulho vazio")
                     return redirect("Info_Jogo",id = id)
 
 

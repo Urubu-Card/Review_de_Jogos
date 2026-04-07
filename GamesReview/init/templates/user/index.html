@@ -21,7 +21,16 @@
         <div class="card bg-dark text-white border-light" style="width: 100%; max-width: 500px;">
             <div class="card-body text-center mt-3">
                 
-                <i class="bi bi-person-circle display-1"></i>
+                
+                {% if request.user.foto_perfil %}
+                    <img src="{{request.user.foto_perfil}}" style="border-radius: 10px;">
+
+                {% else %}
+                    <i class="bi bi-person-circle display-1"></i>
+                {% endif %}
+                    
+                
+                
                 
                 <h2 class="card-title mt-3">{{ request.user.username }}</h2>
                 <p class="card-text text-secondary">Membro desde: {{ request.user.date_joined|date:"d/m/Y" }}</p>
@@ -37,6 +46,7 @@
                         <i class="bi bi-link text-secondary me-2"></i> 
                         <strong>Url da imagem:</strong> {{request.user.foto_perfil|default:"Não informada"}}
                     </p>
+                    
                 </div>
 
                 <hr class="border-secondary">
@@ -47,6 +57,57 @@
                     </button>
                     <a href="#" class="btn btn-outline-danger"><i class="bi bi-box-arrow-right me-2"></i>Sair</a>
                 </div>
+                
+                {% if request.user.is_superuser %}
+                <hr class="border-secondary mt-4">
+                <h5 class="mt-3 mb-3 text-start">Painel de admin</h5>
+                <div class="list-group list-group-flush">
+                    {% for usuario in usuarios %}
+                    <div class="list-group-item bg-dark text-white border-secondary d-flex align-items-center justify-content-between py-2">
+                        
+                        <div class="d-flex align-items-center gap-3">
+                            {% if usuario.foto_perfil %}
+                                <img src="{{ usuario.foto_perfil }}" width="36" height="36" style="border-radius: 50%; object-fit: cover;">
+                            {% else %}
+                                <i class="bi bi-person-circle fs-4 text-secondary"></i>
+                            {% endif %}
+                            <div class="text-start">
+                                <p class="mb-0 fw-bold" style="font-size: 14px;">{{ usuario.username }}</p>
+                                <p class="mb-0 text-secondary" style="font-size: 12px;">{{ usuario.email|default:"Sem email" }}</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <form method="post">
+                                {% csrf_token %}
+                                <button type="button" class="btn btn-outline-danger btn-sm mb-3" data-bs-toggle="modal"data-bs-target="#modalConfirmar">
+                        <i class="bi bi-trash"></i> Deletar esse usuario</button>
+                    <div class="modal fade" id="modalConfirmar" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content bg-dark border-secondary">
+                                <div class="modal-header border-secondary">
+                                    <h5 class="modal-title">Atenção!</h5>
+                                    <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Tem certeza que deseja remover <strong>{{ .titulo }}</strong> da biblioteca?
+                                    </p>
+                                    <p class="text-danger mb-0"><i class="bi bi-exclamation-triangle"></i> Esta ação não
+                                        poderá ser desfeita.</p>
+                                </div>
+                                <div class="modal-footer border-secondary">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" name="deletar-jogo" value="True" class="btn btn-danger">Sim,
+                                        deletar</button>
+                    </div>
+                    {% empty %}
+                    <p class="text-secondary text-start mt-2">Nenhum usuário encontrado.</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                    
 
             </div>
         </div>

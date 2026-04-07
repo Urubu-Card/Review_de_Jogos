@@ -1,49 +1,31 @@
 from django.core.management.base import BaseCommand
 import requests as re
+import os
 from ...models import Game
-from deep_translator import GoogleTranslator
+import json
 from django.db import IntegrityError
 
-API_KEY = "" #!Tirar daqui se for hospedar apenas em modo testes
-tradutor = GoogleTranslator(source='en',target='pt')
+
 class Command(BaseCommand):
 
     help = "Esse comando insere dados da API RAWG dentro do banco de dados"
 
     def handle(self, *args, **options):
 
-        qntd = int(input("Quantidade de jogo que quer adicionar:(MAX:40)"))
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+
+        local_Data = os.path.join(script_dir, "data", "data_Games.json")
         
+        with open(local_Data,"r",encoding="utf-8") as f:
+            data = json.load(f)
+            for jogo in data:
+                nome_jogo       = jogo.get("titulo")
+                desc            = jogo.get("descricao")
+                img_capa        = jogo.get("imagem")
+                plaforma        = jogo.get("plataformas")
+                ano_lancamento  = jogo.get("ano_lancamento")
+                genero          = jogo.get("genero")
 
-        url = f"https://api.rawg.io/api/games?page_size={qntd}&key="
-
-        resposta = re.get(f"{url}{API_KEY}")
-
-        dados = resposta.json()
-
-        url_games = "https://api.rawg.io/api/games/"
-
-        for dado in  dados['results']:
-            
-            id = dado.get("id")
-            
-            resposta = re.get(f"{url_games}{id}?key={API_KEY}")
-            
-            dados_games = resposta.json()
-            
-            nome_jogo = dados_games.get('name')
-            if Game.objects.filter(titulo=nome_jogo).exists():
-                print(f"{nome_jogo} já está no banco de dados")
-                continue
-            else:
-                desc_temp   = dados_games.get("description_raw")
-                img_capa = dados_games.get('background_image')
-                genero = ", ".join([g['name'] for g in dados_games['genres']])
-                plaforma = ", ".join([plata['platform']['name'] for plata in dados_games['platforms']])
-                ano_lancamento = dados_games.get('released')
-                desc = tradutor.translate(desc_temp)
-
-            
                 try:
                     Game.objects.create(
                         titulo=nome_jogo,
@@ -56,7 +38,7 @@ class Command(BaseCommand):
                     print(f"Jogo: {nome_jogo} foi salvo com sucesso! ")
                 except IntegrityError as e:
                     print(f"Jogo ja esta no banco de dados: {e}")
-                
+            
                 
             
         
